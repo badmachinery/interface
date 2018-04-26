@@ -1,0 +1,7 @@
+# Application
+APP_HRES = 1024
+APP_VRES = 768
+
+# Buttons
+BTN_HSIZE = 125
+BTN_VSIZE = 125
