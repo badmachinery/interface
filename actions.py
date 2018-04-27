@@ -4,7 +4,7 @@ import socket
 import interface
 import constants as c
 
-TIMER_INTERVAL = 13    #In milliseconds
+TIMER_INTERVAL = 50    #In milliseconds
 
 KEY_MAP = {
     Qt.Key_W: False,
@@ -40,7 +40,8 @@ class Connection:
         self.sock = socket.socket()
         try:
             #self.sock.connect(('192.168.1.45', 9090))
-            self.sock.connect(('192.168.137.243', 9090))
+            #self.sock.connect(('192.168.137.243', 9090))
+            self.sock.connect(('192.168.137.153', 9090))
         except Exception:
             self.sock.connect(('192.168.137.223', 9090))
         self.sock.settimeout(0)
@@ -59,6 +60,7 @@ con = Connection()
 def manual_write(interface):
     res = []
     speed = c.ENGINE_SPEED[0]
+    #speed = '0'
     rotation = c.SERVO_ANGLE[0]
     for i in KEY_MAP.keys():
         if KEY_MAP[i]:
@@ -68,11 +70,16 @@ def manual_write(interface):
                 rotation = c.SERVO_ANGLE[45]
             if (KEY_MAP[Qt.Key_W]):
                 speed = c.ENGINE_SPEED[current_speed]
+                #speed = '1'
             if (KEY_MAP[Qt.Key_S]):
                 speed = c.ENGINE_SPEED[-1]
 
     #con.send(speed, rotation)
+
+    #con.sock.send(speed.encode('ascii'))
+
     con.sock.send(('s' + str(speed) + '\n').encode('ascii'))
     con.sock.send(('r' + str(rotation) + '\n').encode('ascii'))
+
     #con.sock.send('s'.encode('ascii') + str(speed).encode('ascii') + '/'.encode('ascii') + 'r'.encode('ascii') + str(rotation).encode('ascii') + '/'.encode('ascii'))
     #arduino.send_data(speed, rotation)
