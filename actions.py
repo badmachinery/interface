@@ -3,8 +3,7 @@ import socket
 
 import interface
 import constants as c
-
-TIMER_INTERVAL = 50    #In milliseconds
+import connection
 
 KEY_MAP = {
     Qt.Key_W: False,
@@ -27,40 +26,15 @@ KEY_TO_BTN = {
     Qt.Key_D: interface.WASD_BUTTONS_TEXT[3]
 }
 
-current_speed = 1
-
 #Initialized at main.py/Main/initUI
 #Consists both of Qt.Key_x and 'str' keys
 BTN_MAP = {}
 
 #Actions
+current_speed_forward = 1
 
-class Connection:
-    def __init__(self):
-        self.sock = socket.socket()
-        try:
-            #self.sock.connect(('192.168.1.45', 9090))
-            #self.sock.connect(('192.168.137.243', 9090))
-            self.sock.connect(('192.168.137.153', 9090))
-        except Exception:
-            self.sock.connect(('192.168.137.223', 9090))
-        self.sock.settimeout(0)
-
-    def send(self, *data):
-        try:
-            data_block = b''
-            for s in data:
-                data_block += str(s).encode('ascii') + '/'.encode('ascii')
-            self.sock.sendall(data_block)
-        except Exception:
-            print('Exception')
-
-con = Connection()
-
-def manual_write(interface):
-    res = []
+def get_speed_and_rotation():
     speed = c.ENGINE_SPEED[0]
-    #speed = '0'
     rotation = c.SERVO_ANGLE[0]
     for i in KEY_MAP.keys():
         if KEY_MAP[i]:
@@ -69,17 +43,15 @@ def manual_write(interface):
             if (KEY_MAP[Qt.Key_D]):
                 rotation = c.SERVO_ANGLE[45]
             if (KEY_MAP[Qt.Key_W]):
-                speed = c.ENGINE_SPEED[current_speed]
-                #speed = '1'
+                speed = c.ENGINE_SPEED[current_speed_forward]
             if (KEY_MAP[Qt.Key_S]):
                 speed = c.ENGINE_SPEED[-1]
+    return speed, rotation
 
-    #con.send(speed, rotation)
+def manual_write():
+    speed, rotation = get_speed_and_rotation()
+    sock.send('s', str(speed))
+    sock.send('r', str(rotation))
 
-    #con.sock.send(speed.encode('ascii'))
-
-    con.sock.send(('s' + str(speed) + '\n').encode('ascii'))
-    con.sock.send(('r' + str(rotation) + '\n').encode('ascii'))
-
-    #con.sock.send('s'.encode('ascii') + str(speed).encode('ascii') + '/'.encode('ascii') + 'r'.encode('ascii') + str(rotation).encode('ascii') + '/'.encode('ascii'))
-    #arduino.send_data(speed, rotation)
+sock = connection.Socket_connection()
+ssh = connection.SSH_connection()

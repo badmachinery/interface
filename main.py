@@ -22,17 +22,30 @@ class Main(QWidget):
         self.resize(g.APP_HRES, g.APP_VRES)
         self.setWindowTitle('Connector')
 
-        self.initWASDButtons()
+        self.connection_button = QPushButton(interface.CONNECT_SSH_BUTTON_TEXT, self)
+        self.connection_button.setGeometry(
+            interface.CONNECT_SSH_BUTTON_HPOS, interface.CONNECT_SSH_BUTTON_VPOS,
+            g.BTN_HSIZE, g.BTN_VSIZE)
+        self.connection_button.setStyleSheet(interface.CONNECT_SSH_BUTTON_STYLE)
+        self.connection_button.pressed.connect(self.connect_ssh)
 
-        self.lbl = QLabel('Pressed: ', self)
-        self.lbl.setGeometry(g.APP_HRES // 3 - 125, g.APP_VRES // 3 - 20, 250, 40)
+        self.socket_button = QPushButton(interface.CONNECT_SOCKET_BUTTON_TEXT, self)
+        self.socket_button.setGeometry(
+            interface.CONNECT_SOCKET_BUTTON_HPOS, interface.CONNECT_SOCKET_BUTTON_VPOS,
+            g.BTN_HSIZE, g.BTN_VSIZE)
+        self.socket_button.setStyleSheet(interface.CONNECT_SOCKET_BUTTON_STYLE)
+        self.socket_button.pressed.connect(self.connect_socket)
 
-        self.plbl = QLabel('Received: ', self)
-        self.plbl.setGeometry(g.APP_HRES // 3 - 125, g.APP_VRES // 4 - 20, 250, 40)
+        self.run_button = QPushButton(interface.RUN_BUTTON_TEXT, self)
+        self.run_button.setGeometry(
+            interface.RUN_BUTTON_HPOS, interface.RUN_BUTTON_VPOS,
+            g.BTN_HSIZE, g.BTN_VSIZE)
+        self.run_button.setStyleSheet(interface.RUN_BUTTON_STYLE)
+        self.run_button.pressed.connect(self.run_script)
 
-        self.connection_status = QLabel('Connection: Waiting', self)
-        self.connection_status.setGeometry(g.APP_HRES // 3 - 125, g.APP_VRES // 5 - 20, 250, 40)
+        self.go = False
 
+        #self.initWASDButtons()
         self.show()
 
     def initWASDButtons(self):
@@ -55,11 +68,7 @@ class Main(QWidget):
     def initTimer(self):
         self.write_timer = QTimer(self)
         self.write_timer.timeout.connect(self.write_cycle)
-        self.write_timer.start(a.TIMER_INTERVAL)
-
-        #self.read_timer = QTimer(self)
-        #self.read_timer.timeout.connect(self.read_cycle)
-        #self.read_timer.start(a.TIMER_INTERVAL)
+        self.write_timer.start(c.TIMER_INTERVAL)
 
     def keyPressEvent(self, e):
         if e.key() in a.KEY_MAP.keys():
@@ -89,18 +98,20 @@ class Main(QWidget):
         a.BTN_MAP[self.sender().text()].setStyleSheet(interface.WASD_BUTTONS_STYLE)
 
     def write_cycle(self):
-        if self.mode == c.MODE_MANUAL:
-            a.manual_write(self)
+        if self.go and self.mode == c.MODE_MANUAL:
+            a.manual_write()
 
-    def read_cycle(self):
-        if a.arduino.is_connected:
-            res = a.arduino.receive_data()
-            if res:
-                self.plbl.setText('Received: ' + res)
-            self.connection_status.setText('Connection: Established')
-        else:
-            self.connection_status.setText('Connection: Lost')
+    def connect_ssh(self):
+        a.ssh.connect()
+        self.connection_button.setStyleSheet(interface.CONNECT_SSH_BUTTON_STYLE_PRESSED)
 
+    def connect_socket(self):
+        a.sock.connect()
+        self.socket_button.setStyleSheet(interface.CONNECT_SOCKET_BUTTON_STYLE_PRESSED)
+        self.go = True
+
+    def run_script(self):
+        a.ssh.execute_command()
 
 def main():
     app = QApplication(sys.argv)
