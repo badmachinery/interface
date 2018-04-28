@@ -17,7 +17,6 @@ class Main(QWidget):
         self.initTimer()
         self.mode = c.MODE_MANUAL
 
-
     def initUI(self):
         self.resize(g.APP_HRES, g.APP_VRES)
         self.setWindowTitle('Connector')
@@ -45,25 +44,7 @@ class Main(QWidget):
 
         self.go = False
 
-        #self.initWASDButtons()
         self.show()
-
-    def initWASDButtons(self):
-        self.buttons = [QPushButton(i, self) for i in interface.WASD_BUTTONS_TEXT]
-
-        for i, btn in enumerate(self.buttons):
-            btn.setGeometry(
-                interface.WASD_BUTTONS_HPOS[i], interface.WASD_BUTTONS_VPOS[i],
-                g.BTN_HSIZE, g.BTN_VSIZE)
-            btn.setStyleSheet(interface.WASD_BUTTONS_STYLE)
-
-        [btn.pressed.connect(self.btn_pressed) for btn in self.buttons]
-        [btn.released.connect(self.btn_released) for btn in self.buttons]
-
-        for i, key in enumerate(a.KEY_MAP.keys()):
-            a.BTN_MAP[key] = self.buttons[i]
-        for i, s in enumerate(interface.WASD_BUTTONS_TEXT):
-            a.BTN_MAP[s] = self.buttons[i]
 
     def initTimer(self):
         self.write_timer = QTimer(self)
@@ -73,29 +54,23 @@ class Main(QWidget):
     def keyPressEvent(self, e):
         if e.key() in a.KEY_MAP.keys():
             a.KEY_MAP[e.key()] = True
-            a.BTN_MAP[e.key()].setStyleSheet(interface.WASD_BUTTONS_STYLE_PRESSED)
         else:
             if e.key() == Qt.Key_Shift:
-                a.current_speed += 1
-                if (a.current_speed > 3):
-                    a.current_speed = 3
+                a.current_speed_forward += 1
+                if (a.current_speed_forward > 3):
+                    a.current_speed_forward = 3
             if e.key() == Qt.Key_Control:
-                a.current_speed -= 1
-                if (a.current_speed < 1):
-                    a.current_speed = 1
+                a.current_speed_forward -= 1
+                if (a.current_speed_forward < 1):
+                    a.current_speed_forward = 1
+            if e.key() == Qt.Key_C:
+                self.go = False
+                a.sock.close()
+                a.ssh.stop_execution()
 
     def keyReleaseEvent(self, e):
         if e.key() in a.KEY_MAP.keys():
             a.KEY_MAP[e.key()] = False
-            a.BTN_MAP[e.key()].setStyleSheet(interface.WASD_BUTTONS_STYLE)
-
-    def btn_pressed(self):
-        a.KEY_MAP[a.BTN_TO_KEY[self.sender().text()]] = True
-        a.BTN_MAP[self.sender().text()].setStyleSheet(interface.WASD_BUTTONS_STYLE_PRESSED)
-
-    def btn_released(self):
-        a.KEY_MAP[a.BTN_TO_KEY[self.sender().text()]] = False
-        a.BTN_MAP[self.sender().text()].setStyleSheet(interface.WASD_BUTTONS_STYLE)
 
     def write_cycle(self):
         if self.go and self.mode == c.MODE_MANUAL:
@@ -112,6 +87,7 @@ class Main(QWidget):
 
     def run_script(self):
         a.ssh.execute_command()
+        self.run_button.setStyleSheet(interface.RUN_BUTTON_STYLE_PRESSED)
 
 def main():
     app = QApplication(sys.argv)

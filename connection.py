@@ -1,4 +1,5 @@
 import paramiko
+import socket
 import constants as c
 
 class Socket_connection:
@@ -40,15 +41,21 @@ class SSH_connection:
         sftp.close()
 
     def execute_command(self, command='python3 ' + c.RASPBERRY_APP_DIRECTORY + '/main.py'):
+        self.stdin, stdout, stderr = self.client.exec_command(command)
+        return
+
         transport = self.client.get_transport()
         self.session = transport.open_session()
         self.session.setblocking(0)
         self.session.get_pty()
         self.session.invoke_shell()
         self.session.send(command)
+        data = self.session.recv(512)
+        print(data)
 
     def stop_execution(self):
-        self.session.send('\x03')
+        #self.session.send('\x03')
+        self.stdin.write('\x03')
 
     def close(self):
         self.client.close()

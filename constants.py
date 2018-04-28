@@ -1,13 +1,13 @@
 # Controlling mode
 MODE_MANUAL = 0
 
-RASPBERRY_IP = '192.168.137.153'
+RASPBERRY_IP = '192.168.137.241'
 RASPBERRY_USER = 'pi'
 RASPBERRY_PASSWORD = '12345678'
 RASPBERRY_SOCKET_PORT = 9090
 RASPBERRY_SSH_PORT = 22
 
-RASPBERRY_APP_DIRECTORY = 'home/pi/Connector'
+RASPBERRY_APP_DIRECTORY = '/home/pi/Connector'
 RASPBERRY_APP_SCRIPT_MAIN = 'D:\Projects\Центр проектной деятельности\Робототехника\Raspberry\on_rasp\main.py'
 
 TIMER_INTERVAL = 50    #In milliseconds
