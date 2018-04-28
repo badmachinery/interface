@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import re
+import time
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel,
-    QGridLayout, QPushButton, QMainWindow)
+    QFileDialog, QGridLayout, QPushButton, QMainWindow)
 
 import interface
 import geometry as g
@@ -20,6 +22,7 @@ class Main(QWidget):
     def initUI(self):
         self.resize(g.APP_HRES, g.APP_VRES)
         self.setWindowTitle('Connector')
+        self.setStyleSheet("background-color: black")
 
         self.connection_button = QPushButton(interface.CONNECT_SSH_BUTTON_TEXT, self)
         self.connection_button.setGeometry(
@@ -28,19 +31,19 @@ class Main(QWidget):
         self.connection_button.setStyleSheet(interface.CONNECT_SSH_BUTTON_STYLE)
         self.connection_button.pressed.connect(self.connect_ssh)
 
-        self.socket_button = QPushButton(interface.CONNECT_SOCKET_BUTTON_TEXT, self)
-        self.socket_button.setGeometry(
-            interface.CONNECT_SOCKET_BUTTON_HPOS, interface.CONNECT_SOCKET_BUTTON_VPOS,
-            g.BTN_HSIZE, g.BTN_VSIZE)
-        self.socket_button.setStyleSheet(interface.CONNECT_SOCKET_BUTTON_STYLE)
-        self.socket_button.pressed.connect(self.connect_socket)
-
         self.run_button = QPushButton(interface.RUN_BUTTON_TEXT, self)
         self.run_button.setGeometry(
             interface.RUN_BUTTON_HPOS, interface.RUN_BUTTON_VPOS,
             g.BTN_HSIZE, g.BTN_VSIZE)
         self.run_button.setStyleSheet(interface.RUN_BUTTON_STYLE)
         self.run_button.pressed.connect(self.run_script)
+
+        self.file_button = QPushButton(interface.FILE_BUTTON_TEXT, self)
+        self.file_button.setGeometry(
+            interface.FILE_BUTTON_HPOS, interface.FILE_BUTTON_VPOS,
+            g.BTN_HSIZE, g.BTN_VSIZE)
+        self.file_button.setStyleSheet(interface.FILE_BUTTON_STYLE)
+        self.file_button.pressed.connect(self.send_file)
 
         self.go = False
 
@@ -67,6 +70,7 @@ class Main(QWidget):
                 self.go = False
                 a.sock.close()
                 a.ssh.stop_execution()
+                self.run_button.setStyleSheet(interface.RUN_BUTTON_STYLE)
 
     def keyReleaseEvent(self, e):
         if e.key() in a.KEY_MAP.keys():
@@ -80,14 +84,18 @@ class Main(QWidget):
         a.ssh.connect()
         self.connection_button.setStyleSheet(interface.CONNECT_SSH_BUTTON_STYLE_PRESSED)
 
-    def connect_socket(self):
-        a.sock.connect()
-        self.socket_button.setStyleSheet(interface.CONNECT_SOCKET_BUTTON_STYLE_PRESSED)
-        self.go = True
-
     def run_script(self):
         a.ssh.execute_command()
         self.run_button.setStyleSheet(interface.RUN_BUTTON_STYLE_PRESSED)
+        a.sock.connect()
+        self.go = True
+
+    def send_file(self):
+        filepath = QFileDialog.getOpenFileName(self)[0]
+        filename = re.sub('.*\/', '', filepath)
+
+        a.ssh.send_file(filepath, c.RASPBERRY_APP_DIRECTORY + '/' + filename)
+        self.file_button.setStyleSheet(interface.FILE_BUTTON_STYLE_PRESSED)
 
 def main():
     app = QApplication(sys.argv)

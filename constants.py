@@ -14,9 +14,9 @@ TIMER_INTERVAL = 50    #In milliseconds
 
 #Engine speed
 ENGINE_SPEED = {
--1: 6696,
--2: 6196,
 -3: 5696,
+-2: 6196,
+-1: 6696,
 0: 7200,
 1: 7453,
 2: 7710,

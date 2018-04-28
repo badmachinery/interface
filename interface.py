@@ -1,5 +1,7 @@
 import geometry as g
 
+WINDOW_STYLE = 'background-color: black'
+
 # Buttons
 WASD_BUTTONS_TEXT = ['Forward', 'Left', 'Backward', 'Right']
 WASD_BUTTONS_HPOS = [
@@ -18,20 +20,20 @@ WASD_BUTTONS_STYLE = "background-color: gray"
 WASD_BUTTONS_STYLE_PRESSED = "background-color: red"
 
 
-CONNECT_SSH_BUTTON_TEXT = 'Connect to Raspberry through SSH'
-CONNECT_SSH_BUTTON_HPOS = g.APP_HRES // 2 - g.BTN_HSIZE // 2
-CONNECT_SSH_BUTTON_VPOS = g.APP_VRES // 5
-CONNECT_SSH_BUTTON_STYLE = "background-color: white"
-CONNECT_SSH_BUTTON_STYLE_PRESSED = "background-color: green"
-
-CONNECT_SOCKET_BUTTON_TEXT = 'Connect to Raspberry through sockets'
-CONNECT_SOCKET_BUTTON_HPOS = g.APP_HRES // 2 - g.BTN_HSIZE // 2
-CONNECT_SOCKET_BUTTON_VPOS = g.APP_VRES // 3
-CONNECT_SOCKET_BUTTON_STYLE = "background-color: white"
-CONNECT_SOCKET_BUTTON_STYLE_PRESSED = "background-color: green"
+CONNECT_SSH_BUTTON_TEXT = ''
+CONNECT_SSH_BUTTON_HPOS = 50
+CONNECT_SSH_BUTTON_VPOS = 50
+CONNECT_SSH_BUTTON_STYLE = "background-image: url(\"icons/ssh_connection_off\")"
+CONNECT_SSH_BUTTON_STYLE_PRESSED = "background-image: url(\"icons/ssh_connection_on\")"
 
 RUN_BUTTON_TEXT = 'Run script on Raspberry'
-RUN_BUTTON_HPOS = g.APP_HRES // 2 - g.BTN_HSIZE // 2
-RUN_BUTTON_VPOS = g.APP_VRES - g.BTN_VSIZE
+RUN_BUTTON_HPOS = 50
+RUN_BUTTON_VPOS = 50 + g.BTN_VSIZE + 30
 RUN_BUTTON_STYLE = "background-color: white"
 RUN_BUTTON_STYLE_PRESSED = "background-color: green"
+
+FILE_BUTTON_TEXT = 'Send file to /home/pi/Connector'
+FILE_BUTTON_HPOS = 50
+FILE_BUTTON_VPOS = 50 + g.BTN_VSIZE * 2 + 30 * 2
+FILE_BUTTON_STYLE = "background-color: white"
+FILE_BUTTON_STYLE_PRESSED = "background-color: green"

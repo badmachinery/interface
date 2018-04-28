@@ -3,7 +3,8 @@ import socket
 
 import interface
 import constants as c
-import connection
+import socket_connection
+import ssh_connection
 
 KEY_MAP = {
     Qt.Key_W: False,
@@ -53,5 +54,17 @@ def manual_write():
     sock.send('s', str(speed))
     sock.send('r', str(rotation))
 
-sock = connection.Socket_connection()
-ssh = connection.SSH_connection()
+    #data = ssh.stdout.read()
+    #if (data):
+    #    print('@@@STDOUT:')
+    #    print(data)
+    #    print('///STDOUT')
+
+    #data = ssh.stderr.read()
+    #if (data):
+    #    print('@@@STDERR:')
+    #    print(data)
+    #    print('///STDERR')
+
+sock = socket_connection.Socket_connection()
+ssh = ssh_connection.SSH_connection()
