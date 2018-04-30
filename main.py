@@ -68,9 +68,13 @@ class Main(QWidget):
                     a.current_speed_forward = 1
             if e.key() == Qt.Key_C:
                 self.go = False
+                a.sock.send('R', 'stop')
                 a.sock.close()
-                a.ssh.stop_execution()
                 self.run_button.setStyleSheet(interface.RUN_BUTTON_STYLE)
+            if e.key() == Qt.Key_P:
+                a.sock.send('R', 'script')
+            if e.key() == Qt.Key_K:
+                a.sock.send('R', 'reload')
 
     def keyReleaseEvent(self, e):
         if e.key() in a.KEY_MAP.keys():

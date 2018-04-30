@@ -10,7 +10,8 @@ KEY_MAP = {
     Qt.Key_W: False,
     Qt.Key_A: False,
     Qt.Key_S: False,
-    Qt.Key_D: False
+    Qt.Key_D: False,
+    Qt.Key_R: False
     }
 
 BTN_TO_KEY = {
@@ -54,17 +55,23 @@ def manual_write():
     sock.send('s', str(speed))
     sock.send('r', str(rotation))
 
-    #data = ssh.stdout.read()
-    #if (data):
-    #    print('@@@STDOUT:')
-    #    print(data)
-    #    print('///STDOUT')
+    if KEY_MAP[Qt.Key_R]:
+        sock.send('b', str(1100))
 
-    #data = ssh.stderr.read()
-    #if (data):
-    #    print('@@@STDERR:')
-    #    print(data)
-    #    print('///STDERR')
+    #print_ssh_outs()
+
+def print_ssh_outs():
+    data = ssh.stdout.read()
+    if (data):
+        print('@@@STDOUT:')
+        print(data)
+        print('///STDOUT')
+
+    data = ssh.stderr.read()
+    if (data):
+        print('@@@STDERR:')
+        print(data)
+        print('///STDERR')
 
 sock = socket_connection.Socket_connection()
 ssh = ssh_connection.SSH_connection()
