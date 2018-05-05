@@ -65,6 +65,10 @@ class Main(QWidget):
         self.write_timer.timeout.connect(self.write_cycle)
         self.write_timer.start(c.TIMER_INTERVAL)
 
+        self.con_timer = QTimer(self)
+        self.con_timer.timeout.connect(self.con_cycle)
+        self.con_timer.start(c.TIMER_INTERVAL * 10)
+
     def keyPressEvent(self, e):
         if e.key() in a.KEY_MAP.keys():
             a.KEY_MAP[e.key()] = True
@@ -95,8 +99,15 @@ class Main(QWidget):
         if self.go and self.mode == c.MODE_MANUAL:
             a.manual_write()
 
+    def con_cycle(self):
+        ip = wlan.getIP(c.RASPBERRY_0_MAC)
+        if ip:
+            c.RASPBERRY_IP = ip
+            self.ip_label.setText('IP: ' + c.RASPBERRY_IP)
+        else:
+            self.ip_label.setText(ic.IP_LABEL_TEXT)
+
     def connect_ssh(self):
-        c.RASPBERRY_IP = wlan.getIP(c.RASPBERRY_0_MAC)
         a.ssh.connect()
         self.connection_button.setStyleSheet(ic.CONNECT_SSH_BUTTON_STYLE_PRESSED)
         self.ip_label.setText('IP: ' + c.RASPBERRY_IP)

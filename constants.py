@@ -35,3 +35,5 @@ SERVO_ANGLE = {
 30: 8200,
 45: 8700
 }
+
+'netstat -ap | grep 9091'
