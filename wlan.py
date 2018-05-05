@@ -16,23 +16,23 @@ def checkWLAN(wlan):
 	os.remove(file_name)
 	tmp = file[4].split(':')
 	tmp = [i.strip() for i in tmp]
-	if(tmp[1]!='"'+wlan+'"'): 
+	if(tmp[1]!='"'+wlan+'"'):
 		return -1
-	
+
 	tmp = file[-2].split(':')
 	tmp = [i.strip() for i in tmp]
-	if(tmp[1]=="Not started"): 
+	if(tmp[1]=="Not started"):
 		return 0
 
 	return 1
-	
+
 def initWLAN(wlan, key):
 	'''arg "wlan" is name network to init'''
 	os.system('netsh wlan set hostednetwork mode=allow ssid="%s" key="%s" keyUsage=persistent' % (wlan, key) + "> nul")
 
 def startWLAN(wlan, key="11111111"):
 	'''arg "wlan" is name network to start'''
-	
+
 	if checkWLAN(wlan)==-1:
 		initWLAN(wlan,key)
 		os.system("netsh wlan start hostednetwork > nul")

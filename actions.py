@@ -2,6 +2,7 @@ from PyQt5.QtCore import Qt
 import socket
 
 import interface
+import interface_constants as ic
 import constants as c
 import socket_connection
 import ssh_connection
@@ -15,17 +16,17 @@ KEY_MAP = {
     }
 
 BTN_TO_KEY = {
-    interface.WASD_BUTTONS_TEXT[0]: Qt.Key_W,
-    interface.WASD_BUTTONS_TEXT[1]: Qt.Key_A,
-    interface.WASD_BUTTONS_TEXT[2]: Qt.Key_S,
-    interface.WASD_BUTTONS_TEXT[3]: Qt.Key_D,
+    ic.WASD_BUTTONS_TEXT[0]: Qt.Key_W,
+    ic.WASD_BUTTONS_TEXT[1]: Qt.Key_A,
+    ic.WASD_BUTTONS_TEXT[2]: Qt.Key_S,
+    ic.WASD_BUTTONS_TEXT[3]: Qt.Key_D,
 }
 
 KEY_TO_BTN = {
-    Qt.Key_W: interface.WASD_BUTTONS_TEXT[0],
-    Qt.Key_A: interface.WASD_BUTTONS_TEXT[1],
-    Qt.Key_S: interface.WASD_BUTTONS_TEXT[2],
-    Qt.Key_D: interface.WASD_BUTTONS_TEXT[3]
+    Qt.Key_W: ic.WASD_BUTTONS_TEXT[0],
+    Qt.Key_A: ic.WASD_BUTTONS_TEXT[1],
+    Qt.Key_S: ic.WASD_BUTTONS_TEXT[2],
+    Qt.Key_D: ic.WASD_BUTTONS_TEXT[3]
 }
 
 #Initialized at main.py/Main/initUI

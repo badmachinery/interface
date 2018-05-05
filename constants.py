@@ -1,22 +1,17 @@
-import wlan
-
 # Controlling mode
 MODE_MANUAL = 0
 
 WLAN_NAME = "my_WI-FI"
 WLAN_KEY = "11111111"
 
-wlan.startWLAN(WLAN_NAME,WLAN_KEY)
-
 RASPBERRY_0_MAC = "b8-27-eb-54-fc-60"
-RASPBERRY_IP = wlan.getIP(RASPBERRY_0_MAC)
+RASPBERRY_IP = 'localhost'
 RASPBERRY_USER = 'pi'
 RASPBERRY_PASSWORD = '12345678'
-RASPBERRY_SOCKET_PORT = 9090
+RASPBERRY_SOCKET_PORT = 9091
 RASPBERRY_SSH_PORT = 22
 
 RASPBERRY_APP_DIRECTORY = '/home/pi/Connector'
-RASPBERRY_APP_SCRIPT_MAIN = 'D:\Projects\Центр проектной деятельности\Робототехника\Raspberry\on_rasp\main.py'
 
 TIMER_INTERVAL = 50    #In milliseconds
 

@@ -11,7 +11,7 @@ class SSH_connection:
         self.client.connect(hostname=c.RASPBERRY_IP, username=c.RASPBERRY_USER,
             password=c.RASPBERRY_PASSWORD, port=c.RASPBERRY_SSH_PORT)
 
-    def send_file(self, filename=c.RASPBERRY_APP_SCRIPT_MAIN, directory=c.RASPBERRY_APP_DIRECTORY):
+    def send_file(self, filename, directory=c.RASPBERRY_APP_DIRECTORY):
         sftp = self.client.open_sftp()
         sftp.put(filename, directory)
         sftp.close()
