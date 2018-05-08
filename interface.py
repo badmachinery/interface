@@ -3,7 +3,7 @@ import re
 import time
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel,
-    QFileDialog, QGridLayout, QPushButton, QMainWindow)
+    QFileDialog, QGridLayout, QPushButton, QMainWindow, QLineEdit, QTextEdit)
 
 import interface_constants as ic
 import actions as a
@@ -56,6 +56,21 @@ class Main(QWidget):
         self.file_button.setStyleSheet(ic.FILE_BUTTON_STYLE)
         self.file_button.pressed.connect(self.send_file)
 
+        self.ssh_in = QLineEdit(self)
+        self.ssh_in.setGeometry(
+            ic.SSH_IN_HPOS, ic.SSH_IN_VPOS,
+            ic.SSH_IN_HSIZE, ic.SSH_IN_VSIZE)
+        self.ssh_in.setStyleSheet(ic.SSH_IN_STYLE)
+        self.ssh_in.editingFinished.connect(self.send_command)
+        self.ssh_in.setEnabled(False)   #Here
+
+        self.ssh_text = QTextEdit('', self)
+        self.ssh_text.setGeometry(
+            ic.SSH_TEXT_HPOS, ic.SSH_TEXT_VPOS,
+            ic.SSH_TEXT_HSIZE, ic.SSH_TEXT_VSIZE)
+        self.ssh_text.setStyleSheet(ic.SSH_TEXT_STYLE)
+        self.ssh_text.setReadOnly(True)
+
         self.go = False
 
         self.show()
@@ -67,7 +82,7 @@ class Main(QWidget):
 
         self.con_timer = QTimer(self)
         self.con_timer.timeout.connect(self.con_cycle)
-        self.con_timer.start(c.TIMER_INTERVAL * 10)
+        self.con_timer.start(c.TIMER_INTERVAL * 5)
 
     def keyPressEvent(self, e):
         if e.key() in a.KEY_MAP.keys():
@@ -86,6 +101,7 @@ class Main(QWidget):
                 a.sock.send('R', 'stop')
                 a.sock.close()
                 self.run_button.setStyleSheet(ic.RUN_BUTTON_STYLE)
+                self.ssh_in.setEnabled(True)    #Here
             if e.key() == Qt.Key_P:
                 a.sock.send('R', 'script')
             if e.key() == Qt.Key_K:
@@ -106,28 +122,40 @@ class Main(QWidget):
             self.ip_label.setText('IP: ' + c.RASPBERRY_IP)
         else:
             self.ip_label.setText(ic.IP_LABEL_TEXT)
+        newtext = a.ssh.get_stdout()
+        if newtext:
+            self.ssh_text.append(newtext)
 
     def connect_ssh(self):
         a.ssh.connect()
         self.connection_button.setStyleSheet(ic.CONNECT_SSH_BUTTON_STYLE_PRESSED)
         self.ip_label.setText('IP: ' + c.RASPBERRY_IP)
+        self.ssh_in.setEnabled(True)   #Here
+        a.ssh.invoke_shell()
 
     def connect_wlan(self):
         wlan.startWLAN(c.WLAN_NAME, c.WLAN_KEY)
         self.wlan_button.setStyleSheet(ic.WLAN_BUTTON_STYLE_PRESSED)
 
     def run_script(self):
-        a.ssh.execute_command()
+        a.ssh.send_command('python3 ' + c.RASPBERRY_APP_DIRECTORY + '/main.py')
         self.run_button.setStyleSheet(ic.RUN_BUTTON_STYLE_PRESSED)
         a.sock.connect()
+        self.ssh_in.setEnabled(False)   #HERE
         self.go = True
 
     def send_file(self):
         filepath = QFileDialog.getOpenFileName(self)[0]
         filename = re.sub('.*\/', '', filepath)
 
-        a.ssh.send_file(filepath, c.RASPBERRY_APP_DIRECTORY + '/' + filename)
-        self.file_button.setStyleSheet(ic.FILE_BUTTON_STYLE_PRESSED)
+        if (filename):
+            a.ssh.send_file(filepath, c.RASPBERRY_APP_DIRECTORY + '/' + filename)
+
+    def send_command(self):
+        a.ssh.send_command(self.ssh_in.text())
+        self.ssh_text.append('>>> ' + self.ssh_in.text())
+        self.ssh_in.setText('')
+
 
 app = QApplication(sys.argv)
 menu = Main()

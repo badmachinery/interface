@@ -3,7 +3,7 @@ import constants as c
 
 class SSH_connection:
     def __init__(self):
-        pass
+        self.invoked = False
 
     def connect(self):
         self.client = paramiko.SSHClient()
@@ -16,12 +16,22 @@ class SSH_connection:
         sftp.put(filename, directory)
         sftp.close()
 
-    def execute_command(self, command='python3 ' + c.RASPBERRY_APP_DIRECTORY + '/main.py'):
-        self.stdin, self.stdout, self.stderr = self.client.exec_command(command)
-        return
+    def invoke_shell(self):
+        self.shell = self.client.invoke_shell()
+        self.invoked = True
 
-    def stop_execution(self):
-        self.stdin.write('\x03')
+    def send_command(self, command):
+        if self.invoked:
+            self.shell.send(command + '\n')
+
+    def get_stdout(self):
+        if self.invoked:
+            if self.shell.recv_ready():
+                return self.shell.recv(1024).decode('ascii')
+            else:
+                return ''
+        else:
+            return ''
 
     def close(self):
         self.client.close()

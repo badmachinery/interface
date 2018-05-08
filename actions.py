@@ -29,8 +29,6 @@ KEY_TO_BTN = {
     Qt.Key_D: ic.WASD_BUTTONS_TEXT[3]
 }
 
-#Initialized at main.py/Main/initUI
-#Consists both of Qt.Key_x and 'str' keys
 BTN_MAP = {}
 
 #Actions
@@ -58,21 +56,6 @@ def manual_write():
 
     if KEY_MAP[Qt.Key_R]:
         sock.send('b', str(1100))
-
-    #print_ssh_outs()
-
-def print_ssh_outs():
-    data = ssh.stdout.read()
-    if (data):
-        print('@@@STDOUT:')
-        print(data)
-        print('///STDOUT')
-
-    data = ssh.stderr.read()
-    if (data):
-        print('@@@STDERR:')
-        print(data)
-        print('///STDERR')
 
 sock = socket_connection.Socket_connection()
 ssh = ssh_connection.SSH_connection()
