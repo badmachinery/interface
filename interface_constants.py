@@ -2,6 +2,7 @@
 APP_HRES = 1024
 APP_VRES = 700
 
+WINDOW_TITLE = 'Interface'
 WINDOW_STYLE = 'background-color: black'
 
 # Buttons
@@ -30,11 +31,11 @@ CONNECT_SSH_BUTTON_VPOS = 50
 CONNECT_SSH_BUTTON_STYLE = "background-image: url(\"icons/ssh_connection_off\")"
 CONNECT_SSH_BUTTON_STYLE_PRESSED = "background-image: url(\"icons/ssh_connection_on\")"
 
-RUN_BUTTON_TEXT = 'Run script on Raspberry'
-RUN_BUTTON_HPOS = 50
-RUN_BUTTON_VPOS = 50 + BTN_VSIZE + 30
-RUN_BUTTON_STYLE = "background-color: white"
-RUN_BUTTON_STYLE_PRESSED = "background-color: #33cfff"
+SCRIPT_BUTTON_TEXT = 'Run script on Raspberry'
+SCRIPT_BUTTON_HPOS = 50
+SCRIPT_BUTTON_VPOS = 50 + BTN_VSIZE + 30
+SCRIPT_BUTTON_STYLE = "background-color: white"
+SCRIPT_BUTTON_STYLE_PRESSED = "background-color: #33cfff"
 
 FILE_BUTTON_TEXT = 'Send file to /home/pi/Connector'
 FILE_BUTTON_HPOS = 50
