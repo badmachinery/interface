@@ -118,7 +118,7 @@ def key_handler_c():
     '''
     global script_running
     script_running = False
-    sock.send('R', 'stop')
+    sock.send('C', 'Stop')
     sock.close()
     interface.main.make_button_pressed('script_button', False)
     interface.main.make_edit_line_enabled(True)
@@ -129,11 +129,11 @@ def key_handler_p():
     2) Changes mode in interface
     '''
     global mode
-    sending_options.append(['R', 'script'])
+    sending_options.append(['C', 'Auto'])
     mode = c.MODE_AUTO
 
 def key_handler_k():
-    sending_options.append(['R', 'reload'])
+    sending_options.append(['C', 'Load'])
 
 KEY_HANDLER = {
     Qt.Key_W: key_handler_w,
@@ -182,5 +182,4 @@ def send_command():
     TODO Remake
     '''
     ssh.send_command(interface.main.ssh_in.text())
-    interface.main.ssh_text.append('>>> ' + interface.main.ssh_in.text())
     interface.main.ssh_in.setText('')
