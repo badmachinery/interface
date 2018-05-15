@@ -22,5 +22,5 @@ class Socket_connection:
     def send(self, symbol, data):
         self.sock.send((symbol + data + '\n').encode('ascii'))
 
-    def receive(self):
-        return self.sock.recv(32)
+    def receive(self, amount=32):
+        return self.sock.recv(amount)
