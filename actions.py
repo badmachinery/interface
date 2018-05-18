@@ -105,9 +105,6 @@ def reading_timer_actions():
             if data[0] == 'Q':
                 data = re.search(r'Q(.+)\n', data).groups(0)
                 v.obstacle_distance_front_left = int(data)
-            elif data[0] == 'E':
-                data = re.search(r'E(.+)\n', data).groups(0)
-                v.obstacle_distance_front_right = int(data)
             elif data[0] == 'L':
                 data = re.search(r'L(.+)\n', data).groups(0)
                 v.obstacle_distance_left = int(data)
@@ -157,7 +154,7 @@ def key_handler_c():
     '''
     global script_running
     script_running = False
-    sock.send('C', 'Stop')
+    sock.send('C', 'Exit')
     sock.close()
     interface.main.make_button_pressed('script_button', False)
     interface.main.make_edit_line_enabled(True)
@@ -172,13 +169,13 @@ def key_handler_p():
     mode = c.MODE_AUTO
 
 def key_handler_k():
-    sending_options.append(['C', 'Load'])
+    sending_options.append(['C', 'Reload'])
 
 def key_handler_u():
     sending_options.append(['C', 'Way'])
 
 def key_handler_r():
-    sending_options.append(['C', 'Break'])
+    sending_options.append(['C', 'Pow'])
 
 KEY_HANDLER = {
     Qt.Key_W: key_handler_w,
