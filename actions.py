@@ -113,10 +113,9 @@ def reading_timer_actions():
                 v.obstacle_distance_right = int(data)
 
     ''' 2) '''
-    interface.main.q_obstacle_label.setText(str(v.obstacle_distance_front_left))
-    interface.main.e_obstacle_label.setText(str(v.obstacle_distance_front_right))
-    interface.main.l_obstacle_label.setText(str(v.obstacle_distance_left))
-    interface.main.r_obstacle_label.setText(str(v.obstacle_distance_right))
+    # interface.main.f_obstacle_label.setText(str(v.obstacle_distance_front))
+    # interface.main.l_obstacle_label.setText(str(v.obstacle_distance_left))
+    # interface.main.r_obstacle_label.setText(str(v.obstacle_distance_right))
 
 
 def key_handler_w():
@@ -158,6 +157,7 @@ def key_handler_c():
     sock.close()
     interface.main.make_button_pressed('script_button', False)
     interface.main.make_edit_line_enabled(True)
+    interface.main.car.setStyleSheet(ic.CAR_STYLE)
 
 def key_handler_p():
     '''
@@ -212,6 +212,7 @@ def run_script():
     interface.main.make_button_pressed('script_button')
     sock.connect()
     interface.main.make_edit_line_enabled(False)
+    interface.main.car.setStyleSheet(ic.CAR_STYLE_GOOD)
     script_running = True
     mode = c.MODE_MANUAL
 

@@ -37,29 +37,28 @@ class Main(QWidget):
             ic.LABEL_HSIZE, ic.LABEL_VSIZE)
         self.ip_label.setStyleSheet(ic.IP_LABEL_STYLE)
 
-        self.q_obstacle_label = QLabel(ic.OBSTACLE_LABEL_TEXT, self)
-        self.q_obstacle_label.setGeometry(
-            ic.Q_OBSTACLE_LABEL_HPOS, ic.Q_OBSTACLE_LABEL_VPOS,
-            ic.OBSTACLE_LABEL_HSIZE, ic.OBSTACLE_LABEL_VSIZE)
-        self.q_obstacle_label.setStyleSheet(ic.OBSTACLE_LABEL_STYLE)
-
-        self.e_obstacle_label = QLabel(ic.OBSTACLE_LABEL_TEXT, self)
-        self.e_obstacle_label.setGeometry(
-            ic.E_OBSTACLE_LABEL_HPOS, ic.E_OBSTACLE_LABEL_VPOS,
-            ic.OBSTACLE_LABEL_HSIZE, ic.OBSTACLE_LABEL_VSIZE)
-        self.e_obstacle_label.setStyleSheet(ic.OBSTACLE_LABEL_STYLE)
+        self.f_obstacle_label = QLabel(ic.OBSTACLE_LABEL_TEXT, self)
+        self.f_obstacle_label.setGeometry(
+            ic.F_OBSTACLE_LABEL_HPOS, ic.F_OBSTACLE_LABEL_VPOS,
+            ic.OBSTACLE_LABEL_HSIZE_V, ic.OBSTACLE_LABEL_VSIZE_V)
+        self.f_obstacle_label.setStyleSheet(ic.F_OBSTACLE_LABEL_STYLE)
 
         self.l_obstacle_label = QLabel(ic.OBSTACLE_LABEL_TEXT, self)
         self.l_obstacle_label.setGeometry(
             ic.L_OBSTACLE_LABEL_HPOS, ic.L_OBSTACLE_LABEL_VPOS,
-            ic.OBSTACLE_LABEL_HSIZE, ic.OBSTACLE_LABEL_VSIZE)
-        self.l_obstacle_label.setStyleSheet(ic.OBSTACLE_LABEL_STYLE)
+            ic.OBSTACLE_LABEL_HSIZE_H, ic.OBSTACLE_LABEL_VSIZE_H)
+        self.l_obstacle_label.setStyleSheet(ic.L_OBSTACLE_LABEL_STYLE)
 
         self.r_obstacle_label = QLabel(ic.OBSTACLE_LABEL_TEXT, self)
         self.r_obstacle_label.setGeometry(
             ic.R_OBSTACLE_LABEL_HPOS, ic.R_OBSTACLE_LABEL_VPOS,
-            ic.OBSTACLE_LABEL_HSIZE, ic.OBSTACLE_LABEL_VSIZE)
-        self.r_obstacle_label.setStyleSheet(ic.OBSTACLE_LABEL_STYLE)
+            ic.OBSTACLE_LABEL_HSIZE_H, ic.OBSTACLE_LABEL_VSIZE_H)
+        self.r_obstacle_label.setStyleSheet(ic.R_OBSTACLE_LABEL_STYLE)
+
+        self.car = QLabel(ic.CAR_TEXT, self)
+        self.car.setGeometry(
+            ic.CAR_HPOS, ic.CAR_VPOS, ic.CAR_HSIZE, ic.CAR_VSIZE)
+        self.car.setStyleSheet(ic.CAR_STYLE)
 
     def init_buttons(self):
         self.wlan_button = QPushButton(ic.WLAN_BUTTON_TEXT, self)
