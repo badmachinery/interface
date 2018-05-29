@@ -17,6 +17,26 @@ TIMER_INTERVAL = 50    #In milliseconds
 
 #Engine speed
 ENGINE_SPEED = {
+-3: -100,
+-2: -66,
+-1: -33,
+0: 0,
+1: 33,
+2: 66,
+3: 100,
+}
+
+ROTATION = {
+45: -100,
+30: -66,
+15: -33,
+0: 0,
+-15: 33,
+-30: 66,
+-45: 100
+}
+
+ENGINE_SPEED_OLD = {
 -3: 5696,
 -2: 6196,
 -1: 6696,
@@ -26,7 +46,7 @@ ENGINE_SPEED = {
 3: 7967,
 }
 
-SERVO_ANGLE = {
+SERVO_ANGLE_OLD = {
 45: 6650,
 30: 7036,
 15: 7423,

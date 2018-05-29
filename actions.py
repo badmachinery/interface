@@ -20,10 +20,10 @@ mode = c.MODE_MANUAL
 script_running = False
 
 direction_status = c.DIRECTION_STATUS_STANDING
-forward_speed = 1
-backward_speed = -1
+forward_speed = 3
+backward_speed = -3
 
-rotation_angle = c.SERVO_ANGLE[0]
+rotation_angle = c.ROTATION[0]
 
 sending_speed = c.ENGINE_SPEED[0]
 sending_options = []
@@ -65,7 +65,7 @@ def sending_timer_actions():
 
     ''' 1) '''
     direction_status = c.DIRECTION_STATUS_STANDING
-    rotation_angle = c.SERVO_ANGLE[0]
+    rotation_angle = c.ROTATION[0]
     sending_options.clear()
 
 
@@ -126,10 +126,10 @@ def key_handler_s():
     direction_status = c.DIRECTION_STATUS_BACKWARD
 def key_handler_a():
     global rotation_angle
-    rotation_angle = c.SERVO_ANGLE[-45] #Default (and only) option for manual control
+    rotation_angle = c.ROTATION[-45] #Default (and only) option for manual control
 def key_handler_d():
     global rotation_angle
-    rotation_angle = c.SERVO_ANGLE[45]  #Default (and only) option for manual control
+    rotation_angle = c.ROTATION[45]  #Default (and only) option for manual control
 
 def key_handler_shift():
     global forward_speed
