@@ -30,60 +30,32 @@ class Main(QWidget):
         self.setWindowTitle(ic.WINDOW_TITLE)
         self.setStyleSheet(ic.WINDOW_STYLE)
 
+    def create_label(self, params):
+        label = QLabel(params['text'], self)
+        label.setObjectName(params['name'])
+        label.setGeometry(params['hpos'], params['vpos'], params['hsize'], params['vsize'])
+        label.setStyleSheet(params['stylesheet'])
+        return label
+
     def init_labels(self):
-        self.ip_label = QLabel(ic.IP_LABEL_TEXT, self)
-        self.ip_label.setGeometry(
-            ic.IP_LABEL_HPOS, ic.IP_LABEL_VPOS,
-            ic.LABEL_HSIZE, ic.LABEL_VSIZE)
-        self.ip_label.setStyleSheet(ic.IP_LABEL_STYLE)
+        self.ip_label = self.create_label(ic.IP_LABEL)
+        self.f_obstacle_label = self.create_label(ic.F_OBSTACLE_LABEL)
+        self.l_obstacle_label = self.create_label(ic.L_OBSTACLE_LABEL)
+        self.r_obstacle_label = self.create_label(ic.R_OBSTACLE_LABEL)
+        self.car = self.create_label(ic.CAR)
 
-        self.f_obstacle_label = QLabel(ic.OBSTACLE_LABEL_TEXT, self)
-        self.f_obstacle_label.setGeometry(
-            ic.F_OBSTACLE_LABEL_HPOS, ic.F_OBSTACLE_LABEL_VPOS,
-            ic.OBSTACLE_LABEL_HSIZE_V, ic.OBSTACLE_LABEL_VSIZE_V)
-        self.f_obstacle_label.setStyleSheet(ic.F_OBSTACLE_LABEL_STYLE)
-
-        self.l_obstacle_label = QLabel(ic.OBSTACLE_LABEL_TEXT, self)
-        self.l_obstacle_label.setGeometry(
-            ic.L_OBSTACLE_LABEL_HPOS, ic.L_OBSTACLE_LABEL_VPOS,
-            ic.OBSTACLE_LABEL_HSIZE_H, ic.OBSTACLE_LABEL_VSIZE_H)
-        self.l_obstacle_label.setStyleSheet(ic.L_OBSTACLE_LABEL_STYLE)
-
-        self.r_obstacle_label = QLabel(ic.OBSTACLE_LABEL_TEXT, self)
-        self.r_obstacle_label.setGeometry(
-            ic.R_OBSTACLE_LABEL_HPOS, ic.R_OBSTACLE_LABEL_VPOS,
-            ic.OBSTACLE_LABEL_HSIZE_H, ic.OBSTACLE_LABEL_VSIZE_H)
-        self.r_obstacle_label.setStyleSheet(ic.R_OBSTACLE_LABEL_STYLE)
-
-        self.car = QLabel(ic.CAR_TEXT, self)
-        self.car.setGeometry(
-            ic.CAR_HPOS, ic.CAR_VPOS, ic.CAR_HSIZE, ic.CAR_VSIZE)
-        self.car.setStyleSheet(ic.CAR_STYLE)
+    def create_button(self, params):
+        button = QPushButton(params['text'], self)
+        button.setObjectName(params['name'])
+        button.setGeometry(params['hpos'], params['vpos'], params['hsize'], params['vsize'])
+        button.setStyleSheet(params['stylesheet'])
+        return button
 
     def init_buttons(self):
-        self.wlan_button = QPushButton(ic.WLAN_BUTTON_TEXT, self)
-        self.wlan_button.setGeometry(
-            ic.WLAN_BUTTON_HPOS, ic.WLAN_BUTTON_VPOS,
-            ic.BTN_HSIZE, ic.BTN_VSIZE)
-        self.wlan_button.setStyleSheet(ic.WLAN_BUTTON_STYLE)
-
-        self.connect_ssh_button = QPushButton(ic.CONNECT_SSH_BUTTON_TEXT, self)
-        self.connect_ssh_button.setGeometry(
-            ic.CONNECT_SSH_BUTTON_HPOS, ic.CONNECT_SSH_BUTTON_VPOS,
-            ic.BTN_HSIZE, ic.BTN_VSIZE)
-        self.connect_ssh_button.setStyleSheet(ic.CONNECT_SSH_BUTTON_STYLE)
-
-        self.script_button = QPushButton(ic.SCRIPT_BUTTON_TEXT, self)
-        self.script_button.setGeometry(
-            ic.SCRIPT_BUTTON_HPOS, ic.SCRIPT_BUTTON_VPOS,
-            ic.BTN_HSIZE, ic.BTN_VSIZE)
-        self.script_button.setStyleSheet(ic.SCRIPT_BUTTON_STYLE)
-
-        self.file_button = QPushButton(ic.FILE_BUTTON_TEXT, self)
-        self.file_button.setGeometry(
-            ic.FILE_BUTTON_HPOS, ic.FILE_BUTTON_VPOS,
-            ic.BTN_HSIZE, ic.BTN_VSIZE)
-        self.file_button.setStyleSheet(ic.FILE_BUTTON_STYLE)
+        self.wlan_button = self.create_button(ic.WLAN_BUTTON)
+        self.connect_ssh_button = self.create_button(ic.CONNECT_SSH_BUTTON)
+        self.script_button = self.create_button(ic.SCRIPT_BUTTON)
+        self.file_button = self.create_button(ic.FILE_BUTTON)
 
     def init_buttons_actions(self):
         self.wlan_button.pressed.connect(a.connect_wlan)
@@ -94,17 +66,17 @@ class Main(QWidget):
     def init_ssh_console(self):
         self.ssh_in = QLineEdit(self)
         self.ssh_in.setGeometry(
-            ic.SSH_IN_HPOS, ic.SSH_IN_VPOS,
-            ic.SSH_IN_HSIZE, ic.SSH_IN_VSIZE)
-        self.ssh_in.setStyleSheet(ic.SSH_IN_STYLE)
+            ic.SSH_IN['hpos'], ic.SSH_IN['vpos'],
+            ic.SSH_IN['hsize'], ic.SSH_IN['vsize'])
+        self.ssh_in.setStyleSheet(ic.SSH_IN['stylesheet'])
         self.ssh_in.editingFinished.connect(a.send_command)
         self.ssh_in.setEnabled(False)
 
-        self.ssh_text = QTextEdit('', self)
+        self.ssh_text = QTextEdit(ic.SSH_TEXT['text'], self)
         self.ssh_text.setGeometry(
-            ic.SSH_TEXT_HPOS, ic.SSH_TEXT_VPOS,
-            ic.SSH_TEXT_HSIZE, ic.SSH_TEXT_VSIZE)
-        self.ssh_text.setStyleSheet(ic.SSH_TEXT_STYLE)
+            ic.SSH_TEXT['hpos'], ic.SSH_TEXT['vpos'],
+            ic.SSH_TEXT['hsize'], ic.SSH_TEXT['vsize'])
+        self.ssh_text.setStyleSheet(ic.SSH_TEXT['stylesheet'])
         self.ssh_text.setReadOnly(True)
 
     def init_timers(self):
@@ -129,16 +101,12 @@ class Main(QWidget):
     def write_cycle(self):
         a.sending_timer_actions()
 
-    def make_button_pressed(self, button, status=True):
-        if button == 'script_button':
-            if status:
-                self.script_button.setStyleSheet(ic.SCRIPT_BUTTON_STYLE_PRESSED)
-            else:
-                self.script_button.setStyleSheet(ic.SCRIPT_BUTTON_STYLE)
-        elif button == 'wlan_button':
-            self.wlan_button.setStyleSheet(ic.WLAN_BUTTON_STYLE_PRESSED)
-        elif button == 'connect_ssh_button':
-            self.connect_ssh_button.setStyleSheet(ic.CONNECT_SSH_BUTTON_STYLE_PRESSED)
+    def make_button_pressed(self, name, status=True):
+        button = self.findChild(QPushButton, name=name)
+        if status:
+            button.setStyleSheet(ic.BUTTONS[name]['stylesheet_pressed'])
+        else:
+            button.setStyleSheet(ic.BUTTONS[name]['stylesheet'])
 
     def make_edit_line_enabled(self, status):
         self.ssh_in.setEnabled(status)

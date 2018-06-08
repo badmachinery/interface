@@ -34,56 +34,43 @@ def key_released(key):
     KEY_MAP[key] = False
 
 def system_timer_actions():
-    '''
-    1) Checking wlan connection status (trying to get ip)
-    2) Getting stdout from ssh connection
-    '''
-
-    ''' 1) '''
+    # Check connection status
     ip = wlan.getIP(c.RASPBERRY_0_MAC)
     if ip:
         c.RASPBERRY_IP = ip
         interface.main.ip_label.setText('IP: ' + c.RASPBERRY_IP)
     else:
-        interface.main.ip_label.setText(ic.IP_LABEL_TEXT)
+        interface.main.ip_label.setText(ic.IP_LABEL['text'])
 
-    ''' 2) '''
+    # Get stdout
     newtext = ssh.get_stdout()
     if newtext:
         interface.main.ssh_text.append(newtext)
 
 def sending_timer_actions():
-    '''
-    1) Setting standart states
-    2) Checking all the keys and making actions associated to them
-    3) Flag checking and other actions. Preparing data before sending
-    4) Sending data to Raspberry Pi
-    '''
-
     global direction_status, rotation_angle, \
     script_running, mode, sending_options
 
-    ''' 1) '''
+    # Set standart states
     direction_status = c.DIRECTION_STATUS_STANDING
     rotation_angle = c.ROTATION[0]
     sending_options.clear()
 
 
-    ''' 2) '''
-
+    # Check keys and make assosiated actions
     for key in KEY_MAP.keys():
         if KEY_MAP[key] and key in KEY_HANDLER.keys():
             KEY_HANDLER[key]()
 
-    ''' 3) '''
 
-    '''There we choose which speed do we actually want from our car depending on direction_status'''
+    # Preparing data before sending
+    # There we choose which speed do we actually want from our car depending on direction_status
     sending_speed = {c.DIRECTION_STATUS_STANDING: c.ENGINE_SPEED[0],
                      c.DIRECTION_STATUS_FORWARD: c.ENGINE_SPEED[forward_speed],
                      c.DIRECTION_STATUS_BACKWARD: c.ENGINE_SPEED[backward_speed]
                      }[direction_status]
 
-    ''' 4) '''
+    # Sending data
     if script_running:
         if mode == c.MODE_MANUAL:
             sock.send('s', str(sending_speed))
@@ -92,12 +79,7 @@ def sending_timer_actions():
             sock.send(option[0], option[1])
 
 def reading_timer_actions():
-    '''
-    1) Getting data from raspberry
-    2) Updating interface for new data
-    '''
-
-    ''' 1) '''
+    # Get data from raspberry
     if script_running:
         #data = sock.receive(64)
         data = None
@@ -112,7 +94,7 @@ def reading_timer_actions():
                 data = re.search(r'R(.+)\n', data).groups(0)
                 v.obstacle_distance_right = int(data)
 
-    ''' 2) '''
+    # Updata interface with new data
     # interface.main.f_obstacle_label.setText(str(v.obstacle_distance_front))
     # interface.main.l_obstacle_label.setText(str(v.obstacle_distance_left))
     # interface.main.r_obstacle_label.setText(str(v.obstacle_distance_right))
@@ -145,12 +127,8 @@ def key_handler_control():
     else:
         forward_speed = 1
 
+# Stops script execution on raspberry
 def key_handler_c():
-    '''
-    1) Stops script execution on raspberry
-    2) Stops command sending in interface
-    3) Changes interface
-    '''
     global script_running
     script_running = False
     sock.send('C', 'Exit')
@@ -159,11 +137,8 @@ def key_handler_c():
     interface.main.make_edit_line_enabled(True)
     interface.main.car.setStyleSheet(ic.CAR_STYLE)
 
+# Execute script on raspberry
 def key_handler_p():
-    '''
-    1) Starts auto-script execution on raspberry
-    2) Changes mode in interface
-    '''
     global mode
     sending_options.append(['C', 'Auto'])
     mode = c.MODE_AUTO
@@ -192,9 +167,10 @@ KEY_HANDLER = {
 }
 
 
-'''
-Interface buttons' handlers
-'''
+
+#   @@@@
+# Interface button handlers
+#   @@@@
 
 def connect_wlan():
     wlan.startWLAN(c.WLAN_NAME, c.WLAN_KEY)
@@ -212,7 +188,7 @@ def run_script():
     interface.main.make_button_pressed('script_button')
     sock.connect()
     interface.main.make_edit_line_enabled(False)
-    interface.main.car.setStyleSheet(ic.CAR_STYLE_GOOD)
+    interface.main.car.setStyleSheet(ic.CAR['stylesheet_good'])
     script_running = True
     mode = c.MODE_MANUAL
 
