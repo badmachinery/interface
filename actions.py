@@ -1,4 +1,6 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtWidgets import (QApplication, QWidget, QLabel,
+    QFileDialog, QGridLayout, QPushButton, QMainWindow, QLineEdit, QTextEdit)
 import socket
 import re
 import time
@@ -14,19 +16,16 @@ import vars as v
 sock = socket_connection.Socket_connection()
 ssh = ssh_connection.SSH_connection()
 
-KEY_MAP = { }
+KEY_MAP = {
+Qt.Key_W: False,
+Qt.Key_S: False,
+Qt.Key_A: False,
+Qt.Key_D: False,
+ }
 
 mode = c.MODE_MANUAL
 script_running = False
 
-direction_status = c.DIRECTION_STATUS_STANDING
-forward_speed = 3
-backward_speed = -3
-
-rotation_angle = c.ROTATION[0]
-
-sending_speed = c.ENGINE_SPEED[0]
-sending_options = []
 
 def key_pressed(key):
     KEY_MAP[key] = True
@@ -38,47 +37,28 @@ def system_timer_actions():
     ip = wlan.getIP(c.RASPBERRY_0_MAC)
     if ip:
         c.RASPBERRY_IP = ip
-        interface.main.ip_label.setText('IP: ' + c.RASPBERRY_IP)
+        interface.main.set_text(QLabel, 'ip_label', 'IP: ' + c.RASPBERRY_IP)
     else:
-        interface.main.ip_label.setText(ic.IP_LABEL['text'])
+        interface.main.set_text(QLabel, 'ip_label', ic.IP_LABEL['text'])
 
     # Get stdout
     newtext = ssh.get_stdout()
     if newtext:
         interface.main.ssh_text.append(newtext)
 
-def sending_timer_actions():
-    global direction_status, rotation_angle, \
-    script_running, mode, sending_options
+def communication_timer_actions():
 
-    # Set standart states
-    direction_status = c.DIRECTION_STATUS_STANDING
-    rotation_angle = c.ROTATION[0]
-    sending_options.clear()
-
-
-    # Check keys and make assosiated actions
     for key in KEY_MAP.keys():
-        if KEY_MAP[key] and key in KEY_HANDLER.keys():
+        if KEY_MAP[key] and key in KEY_HANDLER.keys() and script_running:
             KEY_HANDLER[key]()
 
-
-    # Preparing data before sending
-    # There we choose which speed do we actually want from our car depending on direction_status
-    sending_speed = {c.DIRECTION_STATUS_STANDING: c.ENGINE_SPEED[0],
-                     c.DIRECTION_STATUS_FORWARD: c.ENGINE_SPEED[forward_speed],
-                     c.DIRECTION_STATUS_BACKWARD: c.ENGINE_SPEED[backward_speed]
-                     }[direction_status]
-
-    # Sending data
     if script_running:
-        if mode == c.MODE_MANUAL:
-            sock.send('s', str(sending_speed))
-            sock.send('r', str(rotation_angle))
-        for option in sending_options:
-            sock.send(option[0], option[1])
+        if not KEY_MAP[Qt.Key_W] and not KEY_MAP[Qt.Key_S]:
+            sock.send('S', '')
 
-def reading_timer_actions():
+        if not KEY_MAP[Qt.Key_A] and not KEY_MAP[Qt.Key_D]:
+            sock.send('M', '')
+
     # Get data from raspberry
     if script_running:
         #data = sock.receive(64)
@@ -94,63 +74,45 @@ def reading_timer_actions():
                 data = re.search(r'R(.+)\n', data).groups(0)
                 v.obstacle_distance_right = int(data)
 
-    # Updata interface with new data
-    # interface.main.f_obstacle_label.setText(str(v.obstacle_distance_front))
-    # interface.main.l_obstacle_label.setText(str(v.obstacle_distance_left))
-    # interface.main.r_obstacle_label.setText(str(v.obstacle_distance_right))
-
+    # Update interface with new data
+    interface.main.set_text(QLabel, 'f_obstacle_label', str(v.obstacle_distance_front))
+    interface.main.set_text(QLabel, 'l_obstacle_label', str(v.obstacle_distance_left))
+    interface.main.set_text(QLabel, 'r_obstacle_label', str(v.obstacle_distance_right))
 
 def key_handler_w():
-    global direction_status
-    direction_status = c.DIRECTION_STATUS_FORWARD
+    sock.send('F', '')
+
 def key_handler_s():
-    global direction_status
-    direction_status = c.DIRECTION_STATUS_BACKWARD
+    sock.send('B', '')
+
 def key_handler_a():
-    global rotation_angle
-    rotation_angle = c.ROTATION[-45] #Default (and only) option for manual control
+    sock.send('L', '')
+
 def key_handler_d():
-    global rotation_angle
-    rotation_angle = c.ROTATION[45]  #Default (and only) option for manual control
+    sock.send('R', '')
 
 def key_handler_shift():
-    global forward_speed
-    if forward_speed < 3:
-        forward_speed += 1
-    else:
-        forward_speed = 3
+    sock.send('+', '')
 
 def key_handler_control():
-    global forward_speed
-    if forward_speed > 1:
-        forward_speed -= 1
-    else:
-        forward_speed = 1
+    sock.send('-', '')
 
 # Stops script execution on raspberry
 def key_handler_c():
     global script_running
     script_running = False
-    sock.send('C', 'Exit')
+    sock.send('E', '')
     sock.close()
     interface.main.make_button_pressed('script_button', False)
-    interface.main.make_edit_line_enabled(True)
-    interface.main.car.setStyleSheet(ic.CAR_STYLE)
-
-# Execute script on raspberry
-def key_handler_p():
-    global mode
-    sending_options.append(['C', 'Auto'])
-    mode = c.MODE_AUTO
+    interface.main.make_object_enabled(QLineEdit, 'ssh_in', True)
+    interface.main.car.setStyleSheet(ic.CAR['stylesheet'])
 
 def key_handler_k():
-    sending_options.append(['C', 'Reload'])
+    sock.send('R', '')
 
 def key_handler_u():
-    sending_options.append(['C', 'Way'])
+    sock.send('W', '')
 
-def key_handler_r():
-    sending_options.append(['C', 'Pow'])
 
 KEY_HANDLER = {
     Qt.Key_W: key_handler_w,
@@ -160,13 +122,9 @@ KEY_HANDLER = {
     Qt.Key_Shift: key_handler_shift,
     Qt.Key_Control: key_handler_control,
     Qt.Key_C: key_handler_c,
-    Qt.Key_P: key_handler_p,
     Qt.Key_K: key_handler_k,
     Qt.Key_U: key_handler_u,
-    Qt.Key_R: key_handler_r
 }
-
-
 
 #   @@@@
 # Interface button handlers
@@ -179,7 +137,7 @@ def connect_wlan():
 def connect_ssh():
     ssh.connect()
     interface.main.make_button_pressed('connect_ssh_button')
-    interface.main.make_edit_line_enabled(True)
+    interface.main.make_object_enabled(QLineEdit, 'ssh_in', True)
     ssh.invoke_shell()
 
 def run_script():
@@ -187,7 +145,7 @@ def run_script():
     ssh.send_command('python3 ' + c.RASPBERRY_APP_DIRECTORY + '/main.py')
     interface.main.make_button_pressed('script_button')
     sock.connect()
-    interface.main.make_edit_line_enabled(False)
+    interface.main.make_object_enabled(QLineEdit, 'ssh_in', False)
     interface.main.car.setStyleSheet(ic.CAR['stylesheet_good'])
     script_running = True
     mode = c.MODE_MANUAL

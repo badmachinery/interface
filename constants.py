@@ -15,47 +15,6 @@ RASPBERRY_APP_DIRECTORY = '/home/pi/Connector'
 
 TIMER_INTERVAL = 50    #In milliseconds
 
-#Engine speed
-ENGINE_SPEED = {
--3: -100,
--2: -66,
--1: -33,
-0: 0,
-1: 33,
-2: 66,
-3: 100,
-}
-
-ROTATION = {
--45: -100,
--30: -66,
--15: -33,
-0: 0,
-15: 33,
-30: 66,
-45: 100
-}
-
-ENGINE_SPEED_OLD = {
--3: 5696,
--2: 6196,
--1: 6696,
-0: 7200,
-1: 7453,
-2: 7710,
-3: 7967,
-}
-
-SERVO_ANGLE_OLD = {
-45: 6650,
-30: 7036,
-15: 7423,
-0: 7810,
--15: 8360,
--30: 8910,
--45: 9300
-}
-
 DIRECTION_STATUS_STANDING = 0
 DIRECTION_STATUS_FORWARD = 1
 DIRECTION_STATUS_BACKWARD = 2

@@ -65,6 +65,7 @@ class Main(QWidget):
 
     def init_ssh_console(self):
         self.ssh_in = QLineEdit(self)
+        self.ssh_in.setObjectName(ic.SSH_IN['name'])
         self.ssh_in.setGeometry(
             ic.SSH_IN['hpos'], ic.SSH_IN['vpos'],
             ic.SSH_IN['hsize'], ic.SSH_IN['vsize'])
@@ -73,6 +74,7 @@ class Main(QWidget):
         self.ssh_in.setEnabled(False)
 
         self.ssh_text = QTextEdit(ic.SSH_TEXT['text'], self)
+        self.ssh_text.setObjectName(ic.SSH_TEXT['text'])
         self.ssh_text.setGeometry(
             ic.SSH_TEXT['hpos'], ic.SSH_TEXT['vpos'],
             ic.SSH_TEXT['hsize'], ic.SSH_TEXT['vsize'])
@@ -80,13 +82,9 @@ class Main(QWidget):
         self.ssh_text.setReadOnly(True)
 
     def init_timers(self):
-        self.sending_timer = QTimer(self)
-        self.sending_timer.timeout.connect(a.sending_timer_actions)
-        self.sending_timer.start(c.TIMER_INTERVAL)
-
-        self.reading_timer = QTimer(self)
-        self.reading_timer.timeout.connect(a.reading_timer_actions)
-        self.reading_timer.start(c.TIMER_INTERVAL)
+        self.communication_timer = QTimer(self)
+        self.communication_timer.timeout.connect(a.communication_timer_actions)
+        self.communication_timer.start(c.TIMER_INTERVAL)
 
         self.system_timer = QTimer(self)
         self.system_timer.timeout.connect(a.system_timer_actions)
@@ -108,15 +106,14 @@ class Main(QWidget):
         else:
             button.setStyleSheet(ic.BUTTONS[name]['stylesheet'])
 
-    def make_edit_line_enabled(self, status):
-        self.ssh_in.setEnabled(status)
+    def set_text(self, type, name, text):
+        self.findChild(type, name=name).setText(text)
+
+    def make_object_enabled(self, type, name, status):
+        self.findChild(type, name=name).setEnabled(status)
 
     def file_dialog(self):
         return QFileDialog.getOpenFileName(self)[0]
-
-    def set_label_text(self, label, text):
-        if label == 'ip_label':
-            self.ip_label.setText(text)
 
 
 app = QApplication(sys.argv)
