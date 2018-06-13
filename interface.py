@@ -10,6 +10,8 @@ import actions as a
 import constants as c
 import wlan
 
+# bla bla
+
 class Main(QWidget):
     def __init__(self):
         super().__init__()
