@@ -97,6 +97,9 @@ def key_handler_shift():
 def key_handler_control():
     sock.send('-', '')
 
+def key_handler_i():
+    sock.send('I', '')
+
 # Stops script execution on raspberry
 def key_handler_c():
     global script_running
@@ -124,6 +127,7 @@ KEY_HANDLER = {
     Qt.Key_C: key_handler_c,
     Qt.Key_K: key_handler_k,
     Qt.Key_U: key_handler_u,
+    Qt.Key_I: key_handler_i,
 }
 
 #   @@@@
