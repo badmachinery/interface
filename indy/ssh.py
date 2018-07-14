@@ -1,17 +1,17 @@
 import paramiko
-import constants as c
 
-class SSH_connection:
+import actions.consts as consts
+
+class SSH:
     def __init__(self):
         self.invoked = False
 
-    def connect(self):
+    def connect(self, _hostname, _username, _password, _port):
         self.client = paramiko.SSHClient()
         self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.client.connect(hostname=c.RASPBERRY_IP, username=c.RASPBERRY_USER,
-            password=c.RASPBERRY_PASSWORD, port=c.RASPBERRY_SSH_PORT)
+        self.client.connect(hostname=_hostname, username=_username, password=_password, port=_port)
 
-    def send_file(self, filename, directory=c.RASPBERRY_APP_DIRECTORY):
+    def send_file(self, filename, directory=consts.RASPBERRY_APP_DIRECTORY):
         sftp = self.client.open_sftp()
         sftp.put(filename, directory)
         sftp.close()
@@ -27,11 +27,8 @@ class SSH_connection:
     def get_stdout(self):
         if self.invoked:
             if self.shell.recv_ready():
-                return self.shell.recv(1024).decode('ascii')
-            else:
-                return ''
-        else:
-            return ''
+                return self.shell.recv(1024).decode('utf-8')
+        return ''
 
     def close(self):
         self.client.close()

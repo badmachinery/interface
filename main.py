@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 import sys
+import os
+import time
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-import interface
+import interface.builder as builder
+from interface.interface import app
 
 def main():
-    sys.exit(interface.app.exec_())
+    builder.buildAll()
+    sys.exit(app.exec_())
 
 if __name__ == '__main__':
     main()

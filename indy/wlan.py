@@ -54,5 +54,5 @@ def getIP(mac):
 		if(tmp and tmp[1]==mac):
 			res = tmp[0]
 	file.close()
-	os.remove(file_name)
+	#os.remove(file_name)
 	return res
