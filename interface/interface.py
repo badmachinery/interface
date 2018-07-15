@@ -24,9 +24,9 @@ class Interface(QWidget):
         self.hide()
 
 
-    def resizeElement(self, element_type, element_name, horizontal, vertical):
+    def resizeElement(self, element, horizontal, vertical):
         '''element must be resizable'''
-        self.findChild(element_type, name=element_name).resize(horizontal, vertical)
+        self._getElement(element).resize(horizontal, vertical)
 
 
     def _setWindowTitle(self, title):
@@ -37,32 +37,35 @@ class Interface(QWidget):
         self.setStyleSheet(stylesheet)
 
 
-    def _setStyleSheet(self, element_type, element_name, stylesheet):
+    def _setStyleSheet(self, element, stylesheet):
         '''element must have stylesheet field'''
-        self.findChild(element_type, name=element_name).setStyleSheet(stylesheet)
+        self._getElement(element).setStyleSheet(stylesheet)
 
 
-    def _setEnabled(self, element_type, element_name, status):
-        self.findChild(element_type, name=element_name).setEnabled(status)
+    def _setEnabled(self, element, status):
+        self._getElement(element).setEnabled(status)
 
 
-    def _setReadOnly(self, element_type, element_name, status):
+    def _setReadOnly(self, element, status):
         '''Object must have "readonly" property'''
-        self.findChild(element_type, name=element_name).setReadOnly(status)
+        self._getElement(element).setReadOnly(status)
 
 
-    def _setText(self, element_type, element_name, text):
+    def _setText(self, element, text):
         '''element should have text field'''
-        self.findChild(element_type, name=element_name).setText(text)
+        self._getElement(element).setText(text)
 
 
-    def getText(self, element_type, element_name):
+    def getText(self, element):
         '''element should have text field'''
-        return self.findChild(element_type, name=element_name).text()
+        return self._getElement(element).text()
 
-    def _append(self, element_type, element_name, text):
+    def _getElement(self, element):
+        return self.findChild(element['type'], name=element['name'])
+
+    def _append(self, element, text):
         '''element should have text field'''
-        self.findChild(element_type, name=element_name).append(text)
+        self._getElement(element).append(text)
 
 
     def __setStandartObjectProperties(self, object, params):
@@ -107,15 +110,9 @@ class Interface(QWidget):
         return timer
 
 
-    def connectSignal(self, element_type, element_name, signal, function):
-        '''Object must have that signal'''
-        element = self.findChild(element_type, name=element_name)
-        eval('element.{}.connect({})'.format(signal, function))
-
-
-    def startTimer(self, element_name, time_amount):
+    def startTimer(self, element, time_amount):
         '''time_amount: in milliseconds'''
-        self.findChild(QTimer, name=element_name).start(time_amount)
+        self._getElement(element).start(time_amount)
 
 
     def keyPressEvent(self, e):

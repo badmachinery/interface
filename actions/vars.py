@@ -27,3 +27,5 @@ script_running = False
 
 socket_send_status = True
 interface_work_status = True
+
+socket_data = ''

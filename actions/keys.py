@@ -36,9 +36,9 @@ def key_handler_c():
     vars.socket.send('E')
     vars.socket.close()
 
-    interface._setStyleSheet(SCRIPT_BUTTON['type'], SCRIPT_BUTTON['name'], SCRIPT_BUTTON['stylesheet'])
-    interface._setStyleSheet(CAR['type'], CAR['name'], CAR['stylesheet'])
-    interface._setEnabled(SSH_IN['type'], SSH_IN['name'], True)
+    interface._setStyleSheet(SCRIPT_BUTTON, SCRIPT_BUTTON['stylesheet'])
+    interface._setStyleSheet(CAR, CAR['stylesheet'])
+    interface._setEnabled(SSH_IN, True)
 
 def key_handler_k():
     vars.socket.send('R', '')

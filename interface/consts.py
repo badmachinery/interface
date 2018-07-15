@@ -120,37 +120,43 @@ _obs_label_hsize_v = 50
 _obs_label_vsize_v = 30
 _obs_label_text = ''
 
-F_OBSTACLE_LABEL = {
+SENSOR_FRONT= {
 'type': QLabel,
-'name': 'f_obstacle_label',
+'name': 'sensor_front',
 'text': _obs_label_text,
 'hsize': _obs_label_hsize_v,
 'vsize': _obs_label_vsize_v,
 'hpos': CAR['hpos'] + (CAR['hsize'] - _obs_label_hsize_v) // 2 + 2,
 'vpos': CAR['vpos'] - _obs_label_vsize_v - 20,
 'stylesheet': "background-image: url(\"interface/icons/ultrasonic/ultrasonic_none_f.png\")",
+'stylesheet_far': "background-image: url(\"interface/icons/ultrasonic/ultrasonic_far_f.png\")",
+'stylesheet_close': "background-image: url(\"interface/icons/ultrasonic/ultrasonic_close_f.png\")",
 }
 
-L_OBSTACLE_LABEL = {
+SENSOR_LEFT= {
 'type': QLabel,
-'name': 'l_obstacle_label',
+'name': 'sensor_left',
 'text': _obs_label_text,
 'hsize': _obs_label_hsize_h,
 'vsize': _obs_label_vsize_h,
 'hpos': CAR['hpos'] - 20 - _obs_label_hsize_h,
 'vpos': CAR['vpos'] + (CAR['vsize'] - _obs_label_vsize_h) // 2,
 'stylesheet': "background-image: url(\"interface/icons/ultrasonic/ultrasonic_none_l.png\")",
+'stylesheet_far': "background-image: url(\"interface/icons/ultrasonic/ultrasonic_far_l.png\")",
+'stylesheet_close': "background-image: url(\"interface/icons/ultrasonic/ultrasonic_close_l.png\")",
 }
 
-R_OBSTACLE_LABEL = {
+SENSOR_RIGHT = {
 'type': QLabel,
-'name': 'r_obstacle_label',
+'name': 'sensor_right',
 'text': _obs_label_text,
 'hsize': _obs_label_hsize_h,
 'vsize': _obs_label_vsize_h,
 'hpos': CAR['hpos'] + 20 + CAR['hsize'],
 'vpos': CAR['vpos'] + (CAR['vsize'] - _obs_label_vsize_h) // 2,
 'stylesheet': "background-image: url(\"interface/icons/ultrasonic/ultrasonic_none_r.png\")",
+'stylesheet_far': "background-image: url(\"interface/icons/ultrasonic/ultrasonic_far_r.png\")",
+'stylesheet_close': "background-image: url(\"interface/icons/ultrasonic/ultrasonic_close_r.png\")",
 }
 
 SSH_IN = {
