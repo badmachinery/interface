@@ -1,6 +1,24 @@
-import os
+import subprocess
 
-def checkWLAN(wlan):
+def parse(data, _type = None):
+
+	def parse_to_dict(data = data, sep = ':'):
+		info_lines = (list(map(lambda x: x.strip().lower(), info.split(':'))) for info in data.split('\n') if sep in info)
+		wlan_info_dict = {info[0] : info[1] for info in info_lines}
+		return wlan_info_dict
+
+	def line_generator(data = data):
+		return (line.strip().lower() for line in data.split('\n'))
+
+	return parse_to_dict if _type == 'dict' else line_generator
+
+
+def runShell(*commands, timeout = None, encoding = 'utf-8', sep = ' & '):
+	args = sep.join(map(lambda x: str(x), commands))
+	return subprocess.Popen(args, shell = True, encoding = encoding, stdout = subprocess.PIPE).communicate(timeout = timeout)[0]
+	
+
+def checkWLAN(wlan = None, shell_encoding = 'chcp 437'):
 	'''True if wlan status is active
 	   arg "wlan" is name network to check
 	   returns:
@@ -8,51 +26,42 @@ def checkWLAN(wlan):
 		  0 - network not started
 		  1 - network is started'''
 
-	file_name = "info.txt"
-	os.system("CHCP 437 > nul")
-	os.system("netsh wlan show hostednetwork" + " > %s" % (file_name))
-	file=open(file_name,'r').readlines()
-	file_name = '\\'.join(__file__.split("\\")[:-1])+"\\"+file_name
-	os.remove(file_name)
-	tmp = file[4].split(':')
-	tmp = [i.strip() for i in tmp]
-	if(tmp[1]!='"'+wlan+'"'):
+	show_wlan_command = 'netsh wlan show hostednetwork'
+	wlan_info_dict = parse(runShell(shell_encoding, show_wlan_command), _type = 'dict')()
+	if wlan_info_dict['ssid name'] != '"{}"'.format(wlan):
 		return -1
-
-	tmp = file[-2].split(':')
-	tmp = [i.strip() for i in tmp]
-	if(tmp[1]=="Not started"):
+	elif wlan_info_dict['status'] == 'not started':
 		return 0
+	elif wlan_info_dict['status'] == 'started':
+		return 1
 
-	return 1
+def checkSuccess(data):
+	for line in data:
+		if 'administrator privilege' in line:
+			return False
+	return True
 
-def initWLAN(wlan, key):
+def initWLAN(wlan, key = '11111111', shell_encoding = 'chcp 437'):
 	'''arg "wlan" is name network to init'''
-	os.system('netsh wlan set hostednetwork mode=allow ssid="%s" key="%s" keyUsage=persistent' % (wlan, key) + "> nul")
+	set_network = 'netsh wlan set hostednetwork mode=allow ssid="{}" key="{}" keyUsage=persistent'.format(wlan, key)
+	return checkSuccess(parse(runShell(shell_encoding,  set_network))())
 
-def startWLAN(wlan, key="11111111"):
+def startWLAN(wlan, key = "11111111", shell_encoding = 'chcp 437'):
 	'''arg "wlan" is name network to start'''
-
-	if checkWLAN(wlan)==-1:
-		initWLAN(wlan,key)
-		os.system("netsh wlan start hostednetwork > nul")
-	else:
-		os.system("netsh wlan start hostednetwork > nul")
-
+	start_wlan_command = 'netsh wlan start hostednetwork'
+	if checkWLAN(wlan) == -1:
+		check = initWLAN(wlan,key)
+		if not check:
+			return check;
+	return checkSuccess(parse(runShell(shell_encoding, start_wlan_command)()))
+	
 def stopWLAN(wlan):
-	if checkWLAN(wlan)==0:
-		os.system("netsh wlan stop hostednetwork > nul")
+	if checkWLAN(wlan) == 1:
+		subprocess.Call("netsh wlan stop hostednetwork")
 
-def getIP(mac):
-	file_name = "info.txt"
-	os.system("arp -a "+" > %s" % (file_name))
-	file=open(file_name,'r')
-	file_name = '\\'.join(__file__.split("\\")[:-1])+"\\"+file_name
-	res = ""
-	for i in file:
-		tmp = i.split()
-		if(tmp and tmp[1]==mac):
-			res = tmp[0]
-	file.close()
-	#os.remove(file_name)
-	return res
+def getIP(mac, shell_encoding = 'chcp 437'):
+	networks_info_command = "arp -a"
+	info = (_line for _line in (line.split() for line in parse(runShell(shell_encoding, networks_info_command))()) if len(_line) == 3)
+	for network_info in info:
+		if mac == network_info[1]:
+			return network_info[0]
